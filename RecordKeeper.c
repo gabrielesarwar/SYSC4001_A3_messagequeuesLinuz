@@ -46,6 +46,10 @@ int main () {
     
     //need to use two message queues
     msgidAdminRecord = msgget((key_t)1235, 0666 | IPC_CREAT);
+    msgidRecordAdmin = msgget((key_t)1234, 0555 | IPC_CREAT);// one to send back to admin
+    
+    
+    
     
     if (msgidAdminRecord == -1) {
         fprintf(stderr, "msgget failed with error: %d\n", errno);
@@ -68,18 +72,53 @@ int main () {
             insertFirst(linkedListKey, myMessage.name, myMessage.departmentName, myMessage.employeeNum, myMessage.salary);
         }
         
-        if(myMessage.type == 1){
+       else if(myMessage.type == 1){
+            //check name command
+            printf("message type was check name! \n");
+            struct node *result = NULL; //create a node to store
+            result = findLink(myMessage.employeeNum); //find the employee
+            printf("The employee name is: %s", result->name); //get the name from the linked list
+            myMessage.employeeNum=result; //store it in my message to send back
+        }
+        else if(myMessage.type == 2){
             //check name command
             printf("message type was check name! \n");
             struct node *result = NULL;
             result = findLink(myMessage.employeeNum);
-            printf("The employee name is: %s", result->name);
+            printf("The employee department is: %s", result->departmentName);
+            myMessage.employeeNum=result;
         }
-        
+        else if(myMessage.type == 3){
+            //check name command
+            printf("message type was check salary! \n");
+            struct node *result = NULL;
+            result = findLink(myMessage.employeeNum);
+            printf("The employee salary is: %s", result->name);
+            myMessage.employeeNum=result;
+        }
+       else if(myMessage.type == 4){
+            //check name command
+            printf("message type was check employee number! \n");
+            struct node *result = NULL;
+            result = findLink(myMessage.employeeNum);
+            printf("The employee num is: %s", result->employeeNum);
+            myMessage.employeeNum=result;
+        }
+        else if(myMessage.type == 7){
+            running = 0;
+        }
+       
+        else {
+            printf("error");
+        }
         printList();
         
         if(myMessage.type == 7){
             running = 0;
+        }
+        if (msgsnd(msgidRecordAdmin,(void *)&myMessage, sizeof(myMessage), 0) == -1) { //send message to amdmin
+            fprintf(stderr, "msgsnd failed\n");
+            exit(EXIT_FAILURE);
         }
     
 }
