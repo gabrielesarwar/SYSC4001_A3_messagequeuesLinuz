@@ -45,6 +45,7 @@ int main () {
     int userinputNumber;
     
     msgidAdminRecord = msgget((key_t)1235, 0666 | IPC_CREAT);
+    msgidAdminRecord = msgget((key_t)1234, 0555 | IPC_CREAT);// one to recieve back from record
     
     
     printf("here");
@@ -192,11 +193,68 @@ int main () {
         if (strncmp(userinputString, "end", 3) == 0) {
             running = 0;
         }
+        //---------------------------------------------------------------------------------
+        //now when recieving 
+        if (msgidAdminRecord == -1) {
+        fprintf(stderr, "msgget failed with error: %d\n", errno);
+        exit(EXIT_FAILURE);
+    }
+    
+    while (running){
         
-         
+        if (msgrcv(msgidRecordAdmin, (void *)&myMessage, BUFSIZ,
+                   msg_to_receive, 0) == -1) {
+            fprintf(stderr, "msgrcv failed with error: %d\n", errno);
+            exit(EXIT_FAILURE);
+        }
         
+        printf("The type of message was: %i \n", myMessage.type);
         
+        if(myMessage.type == 0){
+            //insert command
+            printf("message type was input!");
+            insertFirst(linkedListKey, myMessage.name, myMessage.departmentName, myMessage.employeeNum, myMessage.salary);
+        }
         
+       else if(myMessage.type == 1){
+            //check name command
+            printf("message type was check name! \n");
+            struct node *result = NULL;
+            result = findLink(myMessage.employeeNum);
+            printf("The employee name is: %s", result->name);
+            
+        }
+        else if(myMessage.type == 2){
+            //check name command
+            printf("message type was check name! \n");
+            struct node *result = NULL;
+            result = findLink(myMessage.employeeNum);
+            printf("The employee department is: %s", result->departmentName);
+            
+        }
+        else if(myMessage.type == 3){
+            //check name command
+            printf("message type was check salary! \n");
+            struct node *result = NULL;
+            result = findLink(myMessage.employeeNum);
+            printf("The employee salary is: %s", result->name);
+            
+        }
+       else if(myMessage.type == 4){
+            //check name command
+            printf("message type was check employee number! \n");
+            struct node *result = NULL;
+            result = findLink(myMessage.employeeNum);
+            printf("The employee num is: %s", result->employeeNum);
+          
+        }
+        else if(myMessage.type == 7){
+            running = 0;
+        }
+       
+        else {
+            printf("error");
+        }      
         
     }
     
