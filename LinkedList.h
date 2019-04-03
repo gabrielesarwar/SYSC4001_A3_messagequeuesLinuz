@@ -131,6 +131,36 @@ struct node* findLink(int employeeNum) {
     return current;
     
 }
+//find a link with a given employee department
+struct node* findLink(int departmentName) {
+    
+    int max_size = length();
+    char *a[2][max_size]; //This will allocate two consecutive arrays of 20 chars each
+    struct node* current = head; //start with first link
+    
+    if(head == NULL){
+        return NULL;
+    }
+    
+    //traverse the whole linked list
+    while(current->departmentName != departmentName){
+        if(current->next == NULL){
+            return NULL;
+        } else if {
+            current = current->next;
+        }
+        else if(current->departmentName == departmentName){
+            
+            printf("the people in the departments are: " + current->employeeNum);
+            for(int i=0;i<max_size;i++){
+            strcpy(a[i], current->employeeNum);
+            }
+        }
+    }
+ 
+    return a;
+    
+}
 
 
 //delete a link with given key
