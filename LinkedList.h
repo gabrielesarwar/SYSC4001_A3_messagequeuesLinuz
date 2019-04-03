@@ -132,7 +132,7 @@ struct node* findLink(int employeeNum) {
     
 }
 //find a link with a given employee department
-struct node* findLink(int departmentName) {
+char* findLink2(int departmentName) {
     
     int max_size = length();
     char *a[2][max_size]; //This will allocate two consecutive arrays of 20 chars each
